@@ -1,0 +1,18 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+
+
+    <form action="/email" method="post">
+
+            {% csrf_token %}
+            <label for="mail">E-mail:</label>
+            <input type="email" id="mail"/>
+        </div>
+
+        <div class="button">
+            <button id="dix" type="submit">GIVE US YOUR EMAIL</button>
+        </div>
+    </form>
+
+{% endblock %}

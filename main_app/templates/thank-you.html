@@ -1,0 +1,21 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+    <p>worked</p>
+    <p>We are almost done, I just need your email address plz</p>
+
+    <form action="{% url "thank_you" %}" method="post">
+        thanks {{ user.full_name }}
+        <img src="{{ user.profile_picture }}">
+        <div>
+            {% csrf_token %}
+            <label for="mail">E-mail:</label>
+            <input type="email" id="mail" name="email"/>
+        </div>
+
+        <div class="button">
+            <button id="dix" type="submit">GIVE US YOUE EMAIL</button>
+        </div>
+    </form>
+
+{% endblock %}

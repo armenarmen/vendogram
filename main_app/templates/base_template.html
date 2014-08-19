@@ -1,0 +1,50 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    </head>
+    <body>
+
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <ul class="nav nav-pills">
+                    <li class="active">
+                        <a href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'how_it_works' %}">How It Works</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'vendogram_mentions' %}">People Selling With Vendogram</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'my_media' %}">My Posts</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'following_selling' %}">Following</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'sold' %}">My Sold!</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'all_tagged_for_sale' %}">For Sale on IG</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <!-- later add nav and shit-->
+            {% block content %}
+
+            {% endblock %}
+        </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    </body>
+    </html>

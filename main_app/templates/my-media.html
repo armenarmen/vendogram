@@ -1,0 +1,17 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+    {% for item in media %}
+        <div>
+            <img src="{{ item.get_standard_resolution_url }}">
+            <p><b>{{ item.user.full_name }} </b> says "{{ item.caption.text }} about this"</p>
+            <p></p>
+            <p>Likes: {{ item.like_count }}</p>
+            <div>
+                {% for comment in item.comments %}
+                    <p>{{ comment }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

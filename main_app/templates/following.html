@@ -1,0 +1,38 @@
+{% extends 'base_template.html' %}
+
+{% block content %}
+    {% for item in media %}
+        {% if ".com" in item.caption.text or "buy" in item.caption.text or "sale" in item.caption.text%}
+            <div>
+                <img src="{{ item.get_standard_resolution_url }}">
+                <p>{{ item.caption }}</p>
+                <p>Likes: {{ item.like_count }}</p>
+                <div>
+                    {% for comment in item.comments %}
+                        <p>{{ comment }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+
+{#{% extends 'base_template.html' %}#}
+{##}
+{#{% block content %}#}
+{#    {% for item in media %}#}
+{#        {% if ".com" in item.caption.text or "buy" in item.caption.text or "sale" in item.caption.text%}#}
+{#            <div>#}
+{#                <img src="{{ item.get_standard_resolution_url }}" class="img-responsive img-circle">#}
+{#                <p><i class="fa fa-caption"></i> {{ item.caption }}</p>#}
+{#                <p><i class="fa fa-thumbs-up"></i> {{ item.like_count }}</p>#}
+{#                <div>#}
+{#                    {% for comment in item.comments %}#}
+{#                        <span class="label label-danger"><i class="fa fa-comment"></i>{{ comment }}</span>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    {% endfor %}#}
+{#{% endblock %}#}
