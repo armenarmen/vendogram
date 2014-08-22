@@ -23,11 +23,13 @@ def home(request):
     return render(request, "home.html")
 
 def get_api_access(access_token=None):
+    # redirect_uri won't work if you deploy this, from the 'request' object you can get the current domain name
     api = InstagramAPI(client_id=local_settings.client_id, client_secret=local_settings.client_secret,
                        redirect_uri="http://localhost:8000/thank-you", access_token=access_token)
     return api
 
-
+# So as I'm sure you know, there's a lot hacked in here to work for the demo, specifically multiple users dont't
+# actually work since the user/instagram info is hardcoded. But props on getting it together for the demo.
 @csrf_exempt
 def thank_you(request):
     if request.method == "POST":
@@ -207,8 +209,10 @@ def both_emails_purchase(media):
     from_email ="armenlsuny@gmail.com"
     email = Profile.objects.filter()[0].email
     for item in media:
+        # May want to do 'if not item.comments: continue' so this logic is not so far indented
         if item.comments:
             for com in item.comments:
+                # could just say "bought"
                 if "Bought".lower() in com.text.lower():
                     print com.text
                     buyer_name = "{}".format(com).split()[1]
