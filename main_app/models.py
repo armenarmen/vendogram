@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+# Should extend AbstractUser or have a ForeignKey to user
+# If you got python-social-auth working, this would have been easier to manage too
 class Profile(models.Model):
     # user = models.OneToOneField(User)
     bio = models.CharField(max_length=2200, blank=True, null=True)
