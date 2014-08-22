@@ -1,21 +1,58 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
-    {% for item in media %}
-        <div>
-            <img src="{{ item.get_standard_resolution_url }}">
-            <p>{{ item.caption }}</p>
-            <p>Likes: {{ item.like_count }}</p>
-            <div>
-                {% for comment in item.comments %}
-                    <p>{{ comment }}</p>
+    <div class="content-section-b">
+        <div class="container">
+            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+                {% for item in media %}
+                    <div class="post">
+                        <img src="{{ item.get_standard_resolution_url }}" class="img-responsive scale-img">
+                        <p class="insta_handle"><b>@{{ item.user.username }}</p></b>
+
+                        <p><i class="fa fa-heart"></i>  {{ item.like_count }}</p>
+                        <div class = "comments">
+                            <p>{{ item.caption.text }}</p>
+                            {% for comment in item.comments %}
+                                <p>{{ comment }}</p>
+                            {% endfor %}
+                        </div>
+                        <div>
+
+                            <center>
+                                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                                  Seller not on #Vendogram?!
+                                </button>
+                                <hr>
+                            </center>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">WTF?!</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <h2>Bummer!</h2>
+                                      <p>They really ought to join, but hey I'm the guy that runs this site so I'm really biased
+                                      I think that <strong>@{{ item.user.username }}</strong> would be more receptive if you told them to!</p>
+
+                                      <p>So pretty, pretty please send a DM to <strong>@{{ item.user.username }}</strong> telling them to register
+                                      with Vendogram!</p>
+
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <br><br>
+                    </div>
                 {% endfor %}
-            </div>
-            <div>
-                <p>Seller not on Vendogram?</p>
-                <button>Tell Them To Join</button>
-            </div>
-            <br><br>
+             </div>
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}

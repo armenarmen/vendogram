@@ -11,10 +11,15 @@ class Profile(models.Model):
     instagram_id = models.CharField(max_length=10, unique=True)
     access_token = models.TextField()
     email = models.EmailField(default="armenlsuny@gmail.com")
+    user = models.CharField(max_length=30)
    # instagram_username = models.CharField(max_length=30)
     def __unicode__(self):
         return u'{}'.format(self.instagram_id)
 
+
+class StripeKey(models.Model):
+    user = models.ForeignKey(Profile, related_name="stripe_key_profile")
+    stripe_key = models.CharField(max_length=100)
 
 # the bellow is my old non working shit.
 

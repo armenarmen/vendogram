@@ -1,16 +1,32 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
-    {% for item in media %}
+    <div class="container">
+        <div class="content-section-a">
+            <center>
+                <h2>Items currently being sold with Vendogram</h2>
+            </center>
+                <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+
+                    {% for item in media %}
+                        <div class="post">
+                        <img src="{{ item.get_standard_resolution_url }}" class="img-responsive scale-img">
+                        <p><b>@{{ item.user.username }}</b> {{ item.caption.text }}</p>
+                        <p><i class="fa fa-heart"> </i>  {{ item.like_count }}</p>
+                            <div>
+                                {% for comment in item.comments %}
+                                    <p>{{ comment }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
         <div>
-        <img src="{{ item.get_standard_resolution_url }}">
-        <p>{{ item.caption }}</p>
-        <p>Likes: {{ item.like_count }}</p>
-            <div>
-                {% for comment in item.comments %}
-                    <p>{{ comment }}</p>
-                {% endfor %}
-            </div>
-        </div>
-    {% endfor %}
+    </div>
+
+
+
+
 {% endblock %}
+
+

@@ -1,13 +1,64 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
-    <h1>Fantastic!</h1>
-    <p>You made it this far, you are truly excellent!</p>
-    <p>Now the question is, do you want to start selling through comments or do you want to start buying through comments?
-    Oooor, (be still my heart) do you want to begin doing both?</p>
-    <p>Either way lets run you through this quick! It is actually fairly simple.</p>
-    <p>If you wish to sell throug comments with vendogram all you need to do is add the words @Vendogram and then a
-    a '$' followed by a number, the price!</p>
-    <p>Once you have done that, your followers will be able to purchase your items via instagram by simply commenting
-    "Buy", then through internet magic we at Vendogram will send them an invoice.  Pretty cool right?</p>
+    <div class="content-section-b armen">
+        <div class="container">
+           <center> <h1 class = "armen">Awesome!</h1>
+                <p class="lead">You are one click away from shopping instagram and two away from selling on instagram!</p>
+           </center>
+            <br>
+            <br>
+            <div class="col-lg-5 col-sm-5">
+                <h2>Are we Selling?</h2>
+                <p>To start selling you will need to register with Stripe (big button bellow), this will only take a
+                    couple of minutes.</p>
+                <p>Then put a <span id="tag">#vendogram</span> in your picture caption, and let your followers know that once they sign
+                up with us they can buy in one comment!</p>
+                <div>
+                    <a href = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_4cZCSHq1jnONcClTutgapMuTwm0KSBRr&scope=read_write&state=1234">
+                    <button class="btn btn-primary btn-lg">
+                                  Start Selling
+                    </button></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-sm-2"></div>
+
+            <div class="col-lg-5 col-sm-5">
+                <h2>Or are we buying?</h2>
+                <p>You are ready to start browsing Instagram and shopping!</p>
+                <p>Any seller that works with Vendogram will now allow you to comment to buy</p>
+                <p>Just include the word <b><i>'Bought'</i></b> in your comment and an invoice will be sent to your inbox!</p>
+                <div>
+                     <a href="{% url 'vendogram_mentions' %}">
+                        <button class="btn btn-primary btn-lg">
+                                      Start Shopping
+                        </button></a>
+
+
+                </div>
+
+
+            </div>
+        </div><br><br>
+        <div class="how-bottom"><h3>Vendogram is in beta?! Let's Go!</h3></div>
+    </div>
+
+
+{#            <div>#}
+{#                <a href = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_4cZCSHq1jnONcClTutgapMuTwm0KSBRr&scope=read_write&state=1234">#}
+{#                <button class="btn btn-primary btn-lg">#}
+{#                              Start Selling#}
+{#                </button></a>#}
+{#                or#}
+{#                <a href="{% url 'vendogram_mentions' %}">#}
+{#                <button class="btn btn-primary btn-lg">#}
+{#                              Start Shopping#}
+{#                </button></a>#}
+{#                <p>Remember, that all you need to do </p>#}
+{#            </div>#}
+{#         </div>#}
+{##}
+{#    </div>#}
+
 {% endblock %}

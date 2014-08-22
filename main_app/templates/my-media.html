@@ -1,17 +1,24 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
+                <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+
     {% for item in media %}
-        <div>
-            <img src="{{ item.get_standard_resolution_url }}">
+
+        <div class="post">
+            <img src="{{ item.get_standard_resolution_url }}" class ="img-responsive scale-img">
             <p><b>{{ item.user.full_name }} </b> says "{{ item.caption.text }} about this"</p>
             <p></p>
-            <p>Likes: {{ item.like_count }}</p>
+            <p><i class="fa fa-heart"> </i>  {{ item.like_count }}</p>
             <div>
                 {% for comment in item.comments %}
                     <p>{{ comment }}</p>
+
                 {% endfor %}
+            <hr>
             </div>
         </div>
     {% endfor %}
+
 {% endblock %}
+

@@ -1,21 +1,42 @@
 {% extends 'base_template.html' %}
-
+{% load staticfiles %}
 {% block content %}
-    <p>worked</p>
-    <p>We are almost done, I just need your email address plz</p>
 
-    <form action="{% url "thank_you" %}" method="post">
-        thanks {{ user.full_name }}
-        <img src="{{ user.profile_picture }}">
-        <div>
-            {% csrf_token %}
-            <label for="mail">E-mail:</label>
-            <input type="email" id="mail" name="email"/>
-        </div>
+        <!-- Page Content -->
 
-        <div class="button">
-            <button id="dix" type="submit">GIVE US YOUE EMAIL</button>
+    <div class="content-section-a">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">{{ user.full_name }}, Welcome to Vendogram</h2>
+                    <p class="lead">Great! Well now we are best friends! But I can't let you make Instagram your
+                    personal store yet! I need your email for that!</p>
+                    <form action="{% url "thank_you" %}" method="post">
+                             <div>
+                            {% csrf_token %}
+                                <label for="mail">E-mail:</label>
+                                <input type="email" id="mail" name="email"/>
+                            </div>
+
+                        <div class="button">
+                            <button id="dix" type="submit" class="btn btn-default btn-lg">plz take my email!</button>
+                        </div>
+                </div><br><br>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <hr class="">
+                    <img class="img-responsive" src="{% static 'img/cart_terrier.gif' %}">
+
+                </div>
+            </div>
+
         </div>
-    </form>
+        <!-- /.container -->
+
+    </div>
 
 {% endblock %}
+

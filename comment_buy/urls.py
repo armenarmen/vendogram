@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     url(r'^sold/$', 'main_app.views.sold', name='sold'),
     url(r'^email/$', 'main_app.views.post_email', name='post_email'),
     url(r'^stripe_connect/$', 'main_app.views.stripe_connect', name='stripe_connect'),
+    url(r'^armen/$', 'main_app.views.armen', name='armen'),
 
 )

@@ -1,31 +1,30 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
-    {% for item in media %}
-{#        <div>#}
-{#            <img src="{{ item.get_standard_resolution_url }}">#}
-{#            <p>{{ item.caption }}</p>#}
-{#            <p>Likes: {{ item.like_count }}</p>#}
-{#            <div>#}
-{#                {% for comment in item.comments %}#}
-{#                    <p>{{ comment }}</p>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        </div>#}
+    <div class="content-section-b">
+        <div class="container">
+            <div class="col-md-4"></div>
+            <center>
+            <h1>Your Sold Stuff</h1>
+            {% for item in media %}
 
+                    {% for comment in item.comments %}
+                        <div class="post" class="sold-things">
 
-        <div>
-            {% for comment in item.comments %}
-                {% if "Bought" in comment.text %}
-                    <h1>You Sold This!</h1>
-                    <img src="{{ item.get_thumbnail_url }}">
-                    <p>{{ comment.text }}</p>
-                    <p>{{ comment.id }}</p>
-                    <p>{{ comment }}</p>
-                    <h1>{{ comment.from.fullname }}</h1>
-                {% endif %}
+                        {% if "Bought" in comment.text %}
+
+                            <img src="{{ item.get_thumbnail_url }}">
+                            <p>{{ comment.text }}</p>
+                            <p>{{ comment }}</p>
+                            <h1>{{ comment.from.fullname }}</h1>
+                        {% endif %}
+                        </div>
+                    {% endfor %}
+
             {% endfor %}
-        </div>
 
-    {% endfor %}
+            </center>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
 {% endblock %}

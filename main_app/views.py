@@ -7,17 +7,23 @@ from instagram.client import InstagramAPI
 import sys
 
 from django.shortcuts import render
+from django.core.mail import send_mail
+
 
 ###
 # from main_app.models import InstagramUser, Profile
-from main_app.models import Profile
+import requests
+import stripe
+import local_settings
+
+from main_app.models import Profile, StripeKey
 
 
 def home(request):
     return render(request, "home.html")
 
 def get_api_access(access_token=None):
-    api = InstagramAPI(client_id="341adc90f31e4258aa8f00512fa9389d", client_secret="d8a9c2b4c02e4e6fa03a87caa7be7e2e",
+    api = InstagramAPI(client_id=local_settings.client_id, client_secret=local_settings.client_secret,
                        redirect_uri="http://localhost:8000/thank-you", access_token=access_token)
     return api
 
@@ -42,7 +48,8 @@ def thank_you(request):
         user = Profile.objects.get_or_create(access_token=access_token[0],
                                            bio=access_token[1]["bio"], website=access_token[1]["website"],
                                            profile_picture=access_token[1]["profile_picture"],
-                                           full_name=access_token[1]["full_name"], instagram_id=access_token[1]["id"])[0]
+                                           full_name=access_token[1]["full_name"], instagram_id=access_token[1]["id"],
+                                           user=access_token[1]["username"])[0]
         user.save()
         print user
         user = Profile.objects.get(access_token=access_token[0])
@@ -77,14 +84,6 @@ def following_selling(request):
     return render(request, "following.html", locals())
 
 
-def sold(request):
-    api = get_api_access(access_token=Profile.objects.filter()[0].access_token) #should be user based! :0
-    my_media = api.user_recent_media()
-    media = my_media[0]
-    print media
-    return render(request, "sold.html", locals())
-
-
 def post_email(request):
     account = Profile.objects.get(access_token=Profile.objects.filter()[0].access_token)#instagram_id=54989816) # bullshit hack
     account.email = request.GET.get('mail') # This right?
@@ -93,18 +92,34 @@ def post_email(request):
 
 
 def stripe_connect(request):
+    url = "https://connect.stripe.com/oauth/token"
+    client_secret = local_settings.stripe_secret
+    code = str(request.GET['code'])
+    grant_type = 'authorization_code'
+
+    query_args = {'client_secret': client_secret, 'code': code, 'grant_type': grant_type}
+    r = requests.post(url, data=query_args)
+    print r.json()['access_token']
+    StripeKey.objects.create(
+        api_key=r.json()['access_token'],
+        user=request.user
+    )
+
+    # Creating a Recipient
+    stripe.Recipient.create(
+        name=request.user.first_name,
+        description=request.user.email,
+        type='individual',
+        api_key=r.json()['access_token']
+    )
+
+    # Creating user as a customer as well
+    stripe.Customer.create(
+        description=request.user.email,
+        api_key=r.json()['access_token']
+    )
+
     return render(request, "stripe_connect.html")
-
-
-# def sold(request):
-#     api = get_api_access(access_token=Profile.objects.filter()[0].access_token) #should be user based! :0
-#     my_media = api.user_media_feed()
-#     media = my_media[0]
-#     return render(request, "sold.html", locals())
-
-
-# def email(request):
-#
 
 
 def how_it_works(request):
@@ -139,8 +154,12 @@ def media_has_comments(for_sale_items):
     return commented_items
 
 
-def email_buyer(buyer_id):
-    pass
+def email_buyer(buyer_email):
+    message = "Invoice"
+    from_email ="armenlsuny@gmail.com"
+    # buyer_email = ['buyer_email']
+    send_mail("Checkout with Vendogram", message, from_email, [buyer_email], fail_silently=False)
+
 
 def email_seller(seller_id):
     pass
@@ -175,3 +194,41 @@ def add_media_to_inventory():
     #save media info as a django object
     # will use check_if_media_is_for_sale
     pass
+
+
+
+def both_emails_purchase(media):
+    seller_subject = "{}, someone bought your thing!".format(Profile.objects.filter()[0].full_name)
+    print seller_subject
+    seller_message = "{}, Someone bought your thing! And this is a message"
+    print seller_message
+    buyer_subject = "Here's an invoice for thee thing you bought"
+    buyer_message = "Now pay the person for the thing which you bought, this is a message"
+    from_email ="armenlsuny@gmail.com"
+    email = Profile.objects.filter()[0].email
+    for item in media:
+        if item.comments:
+            for com in item.comments:
+                if "Bought".lower() in com.text.lower():
+                    print com.text
+                    buyer_name = "{}".format(com).split()[1]
+                    print buyer_name
+                    guy = Profile.objects.filter()[0]
+                    print guy.instagram_id
+                    send_mail("{} here's an invoice for thee thing you bought".format(buyer_name), buyer_message, from_email, ["tran.william26@gmail.com"],
+                              fail_silently=False)
+                    send_mail(seller_subject, seller_message, from_email, [email],
+                              fail_silently=False)
+    # for com in media[index position of item]
+                    #do stuff
+
+def sold(request):
+    api = get_api_access(access_token=Profile.objects.filter()[0].access_token) #should be user based! :0
+    my_media = api.user_recent_media()
+    media = my_media[0]
+    both_emails_purchase(media)
+    return render(request, "sold.html", locals())
+
+
+def armen(request):
+    return render(request, "armen.html")

@@ -2,10 +2,36 @@
 
 {% block content %}
 
-    <div>
-        <h2>Got stuff to sell? or need to buy stuff?</h2>
-        <p>Sign in with instagram to get going and find all this rad shit!</p>
-        <a href="https://instagram.com/oauth/authorize/?client_id=341adc90f31e4258aa8f00512fa9389d&redirect_uri=http://localhost:8000/thank-you&response_type=code"><button>Instagram!</button></a>
+    <!-- Header -->
+    <div class="intro-header">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-message">
+                        <h1>Vendogram</h1>
+                        <h3>Buy & Sell with Comments on Instagram</h3>
+                        <hr class="intro-divider">
+                        <ul class="list-inline intro-social-buttons">
+                            <li>
+                                <a href="https://instagram.com/oauth/authorize/?client_id=341adc90f31e4258aa8f00512fa9389d&redirect_uri=http://localhost:8000/thank-you&response_type=code" class="btn btn-default btn-lg"><i class="fa fa-instagram fa-fw"></i> <span class="network-name">Get Started</span></a>
+                            </li>
+                        </ul>
+                        <div id="reasons">
+                            <ul class="list-inline lead">
+                                <li>sign up</li>
+                                <li>get comments</li>
+                                <li>ship out</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
     </div>
 
 {% endblock %}

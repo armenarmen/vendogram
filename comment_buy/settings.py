@@ -94,3 +94,12 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'armenlsuny@gmail.com'
+EMAIL_HOST_PASSWORD = 'starter1'
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = 'armenlsuny@gmail.com'
+
