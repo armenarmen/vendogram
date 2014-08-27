@@ -1,21 +1,11 @@
+import requests
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-import httplib2
-import json
-import urllib
-from instagram.client import InstagramAPI
-import sys
-
 from django.shortcuts import render
 from django.core.mail import send_mail
-
-
-###
-# from main_app.models import InstagramUser, Profile
-import requests
 import stripe
+from instagram.client import InstagramAPI
 import local_settings
-
 from main_app.models import Profile, StripeKey
 
 
@@ -32,17 +22,12 @@ def get_api_access(access_token=None):
 def thank_you(request):
     if request.method == "POST":
         account = Profile.objects.get(access_token=Profile.objects.filter()[0].access_token)#instagram_id=54989816) # bullshit hack
-        # import pdb;pdb.set_trace()
-        print "account email: " + account.email
         account.email = request.POST["email"]
         account.save()
-        print "NEW account email: " + account.email
         return render(request, "how_it_works.html", locals())
     else:
         code = request.GET.get('code')
         print "This is the code: {}".format(code)
-        # api = InstagramAPI(client_id="341adc90f31e4258aa8f00512fa9389d", client_secret="d8a9c2b4c02e4e6fa03a87caa7be7e2e",
-        #                    redirect_uri="http://localhost:8000/thank-you")
         api = get_api_access()
         access_token = api.exchange_code_for_access_token(code)
         user = Profile.objects.get_or_create(access_token=access_token[0],
@@ -51,9 +36,7 @@ def thank_you(request):
                                            full_name=access_token[1]["full_name"], instagram_id=access_token[1]["id"],
                                            user=access_token[1]["username"])[0]
         user.save()
-        print user
         user = Profile.objects.get(access_token=access_token[0])
-        # import pdb;pdb.set_trace()
         return render(request, "thank-you.html", {"user": user})
 
 
@@ -72,13 +55,14 @@ def vendogram_mentions(request):
 
 
 def my_media(request):
-    api = get_api_access(access_token=Profile.objects.filter()[0].access_token) #should be user based! :0
+    api = get_api_access(access_token=Profile.objects.filter()[0].access_token)
     my_media = api.user_recent_media()
     media = my_media[0]
     return render(request, "my-media.html", locals())
 
+
 def following_selling(request):
-    api = get_api_access(access_token=Profile.objects.filter()[0].access_token) #should be user based! :0
+    api = get_api_access(access_token=Profile.objects.filter()[0].access_token)
     my_media = api.user_media_feed()
     media = my_media[0]
     return render(request, "following.html", locals())
@@ -86,8 +70,7 @@ def following_selling(request):
 
 def post_email(request):
     account = Profile.objects.get(access_token=Profile.objects.filter()[0].access_token)#instagram_id=54989816) # bullshit hack
-    account.email = request.GET.get('mail') # This right?
-    print account.email
+    account.email = request.GET.get('mail')
     return render(request, "email.html")
 
 
@@ -96,10 +79,8 @@ def stripe_connect(request):
     client_secret = local_settings.stripe_secret
     code = str(request.GET['code'])
     grant_type = 'authorization_code'
-
     query_args = {'client_secret': client_secret, 'code': code, 'grant_type': grant_type}
     r = requests.post(url, data=query_args)
-    print r.json()['access_token']
     StripeKey.objects.create(
         api_key=r.json()['access_token'],
         user=request.user
@@ -130,15 +111,6 @@ def get_access_token():
     return HttpResponse("cool!")
 
 
-def get_users_media(api):
-    # Not what I want?
-    recent_media, next_ = api.user_recent_media()
-    photos = []
-    for media in recent_media:
-        photos.append('<img src="%s"/>' % media.images['thumbnail'].url)
-    return photos
-
-
 def check_if_media_is_for_sale(photos):
     for_sale_items = []
     for item in photos:
@@ -157,12 +129,7 @@ def media_has_comments(for_sale_items):
 def email_buyer(buyer_email):
     message = "Invoice"
     from_email ="armenlsuny@gmail.com"
-    # buyer_email = ['buyer_email']
     send_mail("Checkout with Vendogram", message, from_email, [buyer_email], fail_silently=False)
-
-
-def email_seller(seller_id):
-    pass
 
 
 def comment_is_bought(commented_items):
@@ -173,9 +140,6 @@ def comment_is_bought(commented_items):
         if "bought" in item["data"]["text"]:
             buyer_id = item["data"]["from"]["id"]
             email_buyer(buyer_id)
-            # email_seller(InstagramUser.id )
-
-
 
 
 def commentor_is_registered():
@@ -185,7 +149,7 @@ def commentor_is_registered():
 
 
 def send_commentor_invoice():
-    # later to include actual stripe shit
+    # later to include imporved stripe
     pass
 
 
@@ -196,12 +160,9 @@ def add_media_to_inventory():
     pass
 
 
-
 def both_emails_purchase(media):
     seller_subject = "{}, someone bought your thing!".format(Profile.objects.filter()[0].full_name)
-    print seller_subject
     seller_message = "{}, Someone bought your thing! And this is a message"
-    print seller_message
     buyer_subject = "Here's an invoice for thee thing you bought"
     buyer_message = "Now pay the person for the thing which you bought, this is a message"
     from_email ="armenlsuny@gmail.com"
@@ -210,20 +171,16 @@ def both_emails_purchase(media):
         if item.comments:
             for com in item.comments:
                 if "Bought".lower() in com.text.lower():
-                    print com.text
                     buyer_name = "{}".format(com).split()[1]
-                    print buyer_name
                     guy = Profile.objects.filter()[0]
-                    print guy.instagram_id
                     send_mail("{} here's an invoice for thee thing you bought".format(buyer_name), buyer_message, from_email, ["tran.william26@gmail.com"],
                               fail_silently=False)
                     send_mail(seller_subject, seller_message, from_email, [email],
                               fail_silently=False)
-    # for com in media[index position of item]
-                    #do stuff
+
 
 def sold(request):
-    api = get_api_access(access_token=Profile.objects.filter()[0].access_token) #should be user based! :0
+    api = get_api_access(access_token=Profile.objects.filter()[0].access_token)
     my_media = api.user_recent_media()
     media = my_media[0]
     both_emails_purchase(media)
@@ -232,3 +189,31 @@ def sold(request):
 
 def armen(request):
     return render(request, "armen.html")
+
+
+# helper for bellow...
+def get_locations(recent_media):
+    for picture in recent_media:
+        print picture
+
+
+# This is even more in development than the code above
+# it is a raw and ugly, ugly way of finding out from where a given piece of media on IG's 'likers' are from.
+# currently it gets 1 lat-long from 1 post of 1 liker of 1 piece of media.
+def likes_from(request):
+    # give access to api
+    api = get_api_access(access_token=Profile.objects.filter()[0].access_token)
+    user_media = api.user_recent_media()
+    quin = user_media[0][0].likes[0]
+    quin_id = user_media[0][0].likes[0].id
+    print "this for sure is quin:"
+    print quin_id
+    print dir(quin)
+    print quin.full_name
+    print "the above is for sure quin\n\n "
+    print dir(quin)
+    print dir(api.user_recent_media(user_id=quin_id)[0][0])
+    print api.user_recent_media(user_id=quin_id)[0][0].location.point
+    print "latitide: {}".format(api.user_recent_media(user_id=quin_id)[0][0].location.point.latitude)
+    print "latitide: {}".format(api.user_recent_media(user_id=quin_id)[0][0].location.point.longitude).split()
+    return render(request, 'likes.html', locals())
